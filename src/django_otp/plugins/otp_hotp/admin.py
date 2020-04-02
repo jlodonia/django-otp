@@ -63,8 +63,12 @@ class HOTPDeviceAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = [
-            url(r'^(?P<pk>\d+)/config/$', self.admin_site.admin_view(self.config_view), name='otp_hotp_hotpdevice_config'),
-            url(r'^(?P<pk>\d+)/qrcode/$', self.admin_site.admin_view(self.qrcode_view), name='otp_hotp_hotpdevice_qrcode'),
+            # url(r'^(?P<pk>\d+)/config/$', self.admin_site.admin_view(self.config_view), name='otp_hotp_hotpdevice_config'),
+            # url(r'^(?P<pk>\d+)/qrcode/$', self.admin_site.admin_view(self.qrcode_view), name='otp_hotp_hotpdevice_qrcode'),
+
+            url(r'^(?P<pk>[0-9a-f-]+)/config/$', self.admin_site.admin_view(self.config_view), name='otp_hotp_hotpdevice_config'),
+            url(r'^(?P<pk>[0-9a-f-]+)/qrcode/$', self.admin_site.admin_view(self.qrcode_view), name='otp_hotp_hotpdevice_qrcode'),
+            
         ] + super().get_urls()
 
         return urls

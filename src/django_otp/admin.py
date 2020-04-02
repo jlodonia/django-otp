@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.admin.sites import AdminSite
 
+from . import user_has_device
 from .forms import OTPAuthenticationFormMixin
-
 
 def _admin_template_for_django_version():
     """
@@ -31,7 +31,14 @@ class OTPAdminAuthenticationForm(AdminAuthenticationForm, OTPAuthenticationFormM
 
     def clean(self):
         self.cleaned_data = super().clean()
-        self.clean_otp(self.get_user())
+
+        user = self.get_user()
+
+        if user:
+            has_device = user_has_device(user)
+
+            if has_device:
+                self.clean_otp(self.get_user())
 
         return self.cleaned_data
 

@@ -1,5 +1,6 @@
 from base64 import b32encode
 from os import urandom
+from uuid import uuid4
 
 from django.db import models
 
@@ -43,6 +44,7 @@ class StaticToken(models.Model):
 
         *CharField*: A random string up to 16 characters.
     """
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     device = models.ForeignKey(StaticDevice, related_name='token_set', on_delete=models.CASCADE)
     token = models.CharField(max_length=16, db_index=True)
 

@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 
+from uuid import uuid4
 
 class DeviceManager(models.Manager):
     """
@@ -67,6 +68,7 @@ class Device(models.Model):
 
         A :class:`~django_otp.models.DeviceManager`.
     """
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     user = models.ForeignKey(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'), help_text="The user that this device belongs to.", on_delete=models.CASCADE)
     name = models.CharField(max_length=64, help_text="The human-readable name of this device.")
     confirmed = models.BooleanField(default=True, help_text="Is this device ready for use?")
@@ -114,7 +116,8 @@ class Device(models.Model):
 
             device_cls = apps.get_model(app_label, model_name)
             if issubclass(device_cls, Device):
-                device = device_cls.objects.filter(id=int(device_id)).first()
+                # device = device_cls.objects.filter(id=int(device_id)).first()
+                device = device_cls.objects.filter(id=device_id).first()
         except (ValueError, LookupError):
             pass
 
@@ -211,6 +214,7 @@ class ThrottlingMixin(models.Model):
     # code duplication. Subclasses must implement get_throttle_factor(), and
     # must use the verify_is_allowed(), throttle_reset() and
     # throttle_increment() methods from within their verify_token() method.
+    # id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     throttling_failure_timestamp = models.DateTimeField(
         null=True, blank=True, default=None,
         help_text="A timestamp of the last failed verification attempt. Null if last attempt succeeded."

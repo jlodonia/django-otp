@@ -51,7 +51,9 @@ class TOTPDeviceAdmin(admin.ModelAdmin):
         try:
             href = reverse('admin:otp_totp_totpdevice_config', kwargs={'pk': device.pk})
             link = format_html('<a href="{}">qrcode</a>', href)
-        except Exception:
+        except Exception as e:
+            print('[exception] qrcode_link()')
+            print(e)
             link = ''
 
         return link
@@ -63,8 +65,11 @@ class TOTPDeviceAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = [
-            url(r'^(?P<pk>\d+)/config/$', self.admin_site.admin_view(self.config_view), name='otp_totp_totpdevice_config'),
-            url(r'^(?P<pk>\d+)/qrcode/$', self.admin_site.admin_view(self.qrcode_view), name='otp_totp_totpdevice_qrcode'),
+            # url(r'^(?P<pk>\d+)/config/$', self.admin_site.admin_view(self.config_view), name='otp_totp_totpdevice_config'),
+            # url(r'^(?P<pk>\d+)/qrcode/$', self.admin_site.admin_view(self.qrcode_view), name='otp_totp_totpdevice_qrcode'),
+
+            url(r'^(?P<pk>[0-9a-f-]+)/config/$', self.admin_site.admin_view(self.config_view), name='otp_totp_totpdevice_config'),
+            url(r'^(?P<pk>[0-9a-f-]+)/qrcode/$', self.admin_site.admin_view(self.qrcode_view), name='otp_totp_totpdevice_qrcode'),
         ] + super().get_urls()
 
         return urls

@@ -2,12 +2,17 @@ import functools
 
 from django.utils.functional import SimpleLazyObject
 
-from django_otp import DEVICE_ID_SESSION_KEY
+from django_otp import DEVICE_ID_SESSION_KEY, user_has_device
 from django_otp.models import Device
 
 
 def is_verified(user):
-    return user.otp_device is not None
+
+    has_device = user_has_device(user)
+    if has_device:
+        return user.otp_device is not None
+
+    return True
 
 
 class OTPMiddleware:
@@ -31,6 +36,7 @@ class OTPMiddleware:
 
         return self.get_response(request)
 
+
     def _verify_user(self, request, user):
         """
         Sets OTP-related fields on an authenticated user.
@@ -39,6 +45,10 @@ class OTPMiddleware:
         user.is_verified = functools.partial(is_verified, user)
 
         if user.is_authenticated:
+
+            if not user_has_device(user):
+                return user
+
             persistent_id = request.session.get(DEVICE_ID_SESSION_KEY)
             device = self._device_from_persistent_id(persistent_id) if persistent_id else None
 
