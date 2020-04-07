@@ -9,6 +9,7 @@ class Settings:
     """
     defaults = {
         'OTP_LOGIN_URL': django.conf.settings.LOGIN_URL,
+        'OTP_USE_AVAILABLE_DEVICE_FOR_USER': True,
     }
 
     def __init__(self):

@@ -73,7 +73,7 @@ class HOTPDeviceAdmin(admin.ModelAdmin):
 
         return urls
 
-    def config_view(self, request, pk):
+    def config_view(self, request, pk, extra_context=None):
         device = HOTPDevice.objects.get(pk=pk)
 
         try:

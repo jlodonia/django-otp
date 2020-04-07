@@ -5,6 +5,7 @@ from django.utils.translation import ngettext_lazy
 
 from . import devices_for_user, match_token
 from .models import Device, VerifyNotAllowed
+from .conf import settings
 
 
 class OTPAuthenticationFormMixin:
@@ -80,7 +81,11 @@ class OTPAuthenticationFormMixin:
         if user is None:
             return
 
-        device = self._chosen_device(user)
+        if settings.OTP_USE_AVAILABLE_DEVICE_FOR_USER:
+            device = None
+        else:
+            device = self._chosen_device(user)
+
         token = self.cleaned_data.get('otp_token')
 
         user.otp_device = None
