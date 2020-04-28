@@ -86,7 +86,7 @@ class HOTPDeviceAdmin(admin.ModelAdmin):
 
         return TemplateResponse(request, 'otp_hotp/admin/config.html', context)
 
-    def qrcode_view(self, request, pk):
+    def qrcode_view(self, request, pk, extra_context=None):
         device = HOTPDevice.objects.get(pk=pk)
 
         try:

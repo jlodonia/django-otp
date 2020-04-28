@@ -87,7 +87,7 @@ class TOTPDeviceAdmin(admin.ModelAdmin):
 
         return TemplateResponse(request, 'otp_totp/admin/config.html', context)
 
-    def qrcode_view(self, request, pk):
+    def qrcode_view(self, request, pk, extra_context=None):
         device = TOTPDevice.objects.get(pk=pk)
 
         try:
